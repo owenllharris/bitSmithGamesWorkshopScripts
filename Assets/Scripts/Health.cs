@@ -22,10 +22,10 @@ public class Health : MonoBehaviour
 			{
 				Instantiate(hurtParticle, this.transform.position, Quaternion.identity);
 			}
-		}
-		if(health <= 0)
-		{
-			BroadcastMessage("Dead");
+			if(health <= 0)
+			{
+				BroadcastMessage("Dead");
+			}
 		}
 	}
 }

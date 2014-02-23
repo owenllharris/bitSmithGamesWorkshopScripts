@@ -1,0 +1,20 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Enemy.cs">
+    <Files>
+      <File FileName="Assets\Scripts\Platform.cs" Line="56" Column="28" />
+      <File FileName="Assets\Scripts\Projectile.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Health.cs" Line="31" Column="2" />
+      <File FileName="Assets\Scripts\Enemy.cs" Line="55" Column="3" />
+      <File FileName="Assets\Scripts\Player.cs" Line="40" Column="4" />
+      <File FileName="Assets\Scripts\MoveBetween.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Movement.cs" Line="12" Column="32" />
+      <File FileName="Assets\Scripts\LineOfSight.cs" Line="16" Column="2" />
+      <File FileName="..\..\..\..\..\Franknjohn\franknjohn\Assets\Scripts\Enemies\BaseEnemy.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

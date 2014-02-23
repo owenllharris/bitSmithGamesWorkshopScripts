@@ -64,4 +64,14 @@ public class Platform : MonoBehaviour
 			return Where.Below;
 		}
 	}
+
+	void OnBecameVisible() 
+	{
+		enabled = true;
+	}
+	// disable when we can't see it so were not always testing against the players position
+	void OnBecameInvisible() 
+	{
+		enabled = false;
+	}
 }
