@@ -5,18 +5,7 @@ public class Player : MonoBehaviour
 {
 	private Transform myTransform;
 	private Movement movement;
-	private Animator animator;
 	private GameObject draggingObject;
-
-	public string jumpAnim = "";
-	public string leftAnim = "";
-	public string rightAnim = "";
-	public string upAnim = "";
-	public string downAnim = "";
-	public string upLeftAnim = "";
-	public string upRightAnim = "";
-	public string downLeftAnim = "";
-	public string downRightAnim = "";
 
 
 	// Use this for initialization
@@ -24,21 +13,12 @@ public class Player : MonoBehaviour
 	{
 		myTransform = this.transform;
 		movement = GetComponent<Movement>();
-		animator = GetComponent<Animator>();
-		if(!animator)
-			GetComponentInChildren<Animator>();
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
 		Controls();
-	}
-
-	void PlayAnimation(string anim)
-	{
-		//movement.FacingWhichWay;
-		animator.Play(anim);
 	}
 
 	void Controls()
@@ -56,6 +36,7 @@ public class Player : MonoBehaviour
 
 		if(Input.GetButtonDown("Fire1"))
 		{
+			movement.Shoot();
 			BroadcastMessage("Shoot", movement.GetDirection(), SendMessageOptions.DontRequireReceiver);
 		}
 		if(Input.GetButtonDown("Fire2"))

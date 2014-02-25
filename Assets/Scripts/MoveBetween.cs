@@ -16,7 +16,7 @@ public class MoveBetween : MonoBehaviour
 	private Vector2 moveTo;
 
 	public bool moveBackAndForth;
-
+	private Vector2 startPos, endPos;
 	private Movement movement;
 
 	// Use this for initialization
@@ -24,20 +24,20 @@ public class MoveBetween : MonoBehaviour
 	{
 		myTransform = this.transform;
 		state = State.AtStart;
-		if(start)
-			this.transform.position = start.transform.position;
-		else
-		{
-			start = new GameObject();
-			start.transform.position = this.transform.position;
-		}
-		if(!end)
-		{
-			end = new GameObject();
-			end.transform.position = this.transform.position;
-		}
+
+		start.transform.parent = null;
+		end.transform.parent  = null;
+		this.transform.position = start.transform.position;
+		startPos = new Vector2(start.transform.position.x, myTransform.position.y);
+		endPos = new Vector2(end.transform.position.x, myTransform.position.y);
+
+		moveTo = startPos;
+
 		movement = GetComponent<Movement>();
 		ChangeMethodInfo(state.ToString());
+
+		Destroy(start);
+		Destroy(end);
 	}
 	
 	// Update is called once per frame
@@ -48,14 +48,14 @@ public class MoveBetween : MonoBehaviour
 
 	void AtStart()
 	{
-		moveTo = new Vector2(end.transform.position.x, end.transform.position.y);
+		moveTo = endPos;
 		state = State.MovingToEnd;
 		ChangeMethodInfo(state.ToString());
 	}
 
 	void MovingToStart()
 	{
-		movement.MoveTowards(new Vector2(start.transform.position.x, start.transform.position.y));
+		movement.MoveTowards(startPos);
 		if(Vector2.Distance(new Vector2(myTransform.position.x, myTransform.position.y), moveTo) < 0.2f)
 		{
 			state = State.AtStart;
@@ -65,14 +65,14 @@ public class MoveBetween : MonoBehaviour
 
 	void AtEnd()
 	{
-		moveTo = new Vector2(start.transform.position.x, start.transform.position.y);
+		moveTo = startPos;
 		state = State.MovingToStart;
 		ChangeMethodInfo(state.ToString());
 	}
 
 	void MovingToEnd()
 	{
-		movement.MoveTowards(new Vector2(end.transform.position.x, end.transform.position.y));
+		movement.MoveTowards(endPos);
 		if(Vector2.Distance(new Vector2(myTransform.position.x, myTransform.position.y), moveTo) < 0.2f)
 		{
 			state = State.AtEnd;

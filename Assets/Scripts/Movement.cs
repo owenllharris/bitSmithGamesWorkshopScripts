@@ -10,6 +10,17 @@ public class Movement : MonoBehaviour
 
 	public enum Facing {left, right, up, down, upleft, upright, downleft, downright, free};
 	private Facing facingWhichWay;
+	
+	public string jumpAnim = "";
+	public string leftAnim = "";
+	public string rightAnim = "";
+	public string upAnim = "";
+	public string downAnim = "";
+	public string upLeftAnim = "";
+	public string upRightAnim = "";
+	public string downLeftAnim = "";
+	public string downRightAnim = "";
+	public string shootAnim = "";
 
 	public Facing FacingWhichWay {
 		get {
@@ -53,7 +64,7 @@ public class Movement : MonoBehaviour
 	}
 
 	private Transform myTransform;
-
+	private Animator animator;
 	private Vector2 targetVelocity, 
 				controlVector, 
 				velocityChange;
@@ -92,6 +103,9 @@ public class Movement : MonoBehaviour
 			rigidbody2D.gravityScale = 0f;
 			myTransform.rotation = Quaternion.AngleAxis(0, Vector3.forward);
 		}
+		animator = GetComponent<Animator>();
+		if(!animator)
+			GetComponentInChildren<Animator>();
 	}
 
 	public void MoveTowards(Vector2 vector)
@@ -111,27 +125,57 @@ public class Movement : MonoBehaviour
 		rigidbody2D.velocity = Vector2.zero;
 	}
 
+	void PlayAnimation(string anim)
+	{
+		if(anim != "")
+		{
+			animator.Play(anim);
+			//Debug.Log(anim);
+		}
+	}
+
 	private void Movement8Way()
 	{
 		if(controlVector.x < 0 && controlVector.y > 0)
+		{
 			facingWhichWay = Facing.upleft;
+			PlayAnimation(upLeftAnim);
+		}
 		else if(controlVector.y > 0 && controlVector.x > 0)
+		{
 			facingWhichWay = Facing.upright;
+			PlayAnimation(upRightAnim);
+		}
 		else if(controlVector.y < 0 && controlVector.x < 0)
+		{
 			facingWhichWay = Facing.downleft;
+			PlayAnimation(downLeftAnim);
+		}
 		else if(controlVector.y < 0 && controlVector.x > 0)
+		{
 			facingWhichWay = Facing.downright;
-		// Calculate how fast we should be moving	
+			PlayAnimation(downRightAnim);
+		}
 		else if(controlVector.x < 0)
+		{
 			facingWhichWay = Facing.left;
+			PlayAnimation(leftAnim);
+		}
 		else if(controlVector.x > 0)
+		{
 			facingWhichWay = Facing.right;
+			PlayAnimation(rightAnim);
+		}
 		else if(controlVector.y < 0)
+		{
 			facingWhichWay = Facing.down;
+			PlayAnimation(downAnim);
+		}
 		else if(controlVector.y > 0)
+		{
 			facingWhichWay = Facing.up;
-
-
+			PlayAnimation(upAnim);
+		}
 
 		targetVelocity = controlVector;
 		if(targetVelocity.magnitude > 1)
@@ -151,9 +195,17 @@ public class Movement : MonoBehaviour
 	{
 		// Calculate how fast we should be moving	
 		if(controlVector.x < 0)
+		{
 			facingWhichWay = Facing.left;
+			if(grounded)
+				PlayAnimation(leftAnim);
+		}
 		else if(controlVector.x > 0)
+		{
 			facingWhichWay = Facing.right;
+			if(grounded)
+				PlayAnimation(rightAnim);
+		}
 		/*else if(controlVector.y < 0)
 			facingWhichWay = Facing.down;
 		else if(controlVector.y > 0)
@@ -182,9 +234,17 @@ public class Movement : MonoBehaviour
 	private void MovementUpDown()
 	{
 		if(controlVector.y < 0)
+		{
 			facingWhichWay = Facing.down;
+			//if(grounded && rigidbody2D.gravityScale > 0)
+				PlayAnimation(downAnim);
+		}
 		else if(controlVector.y > 0)
+		{
 			facingWhichWay = Facing.up;
+			//if(grounded && rigidbody2D.gravityScale > 0)
+				PlayAnimation(upAnim);
+		}
 		// Calculate how fast we should be moving	
 		targetVelocity = controlVector;
 		if(targetVelocity.magnitude > 1)
@@ -203,9 +263,15 @@ public class Movement : MonoBehaviour
 	private void MovementLeftRight()
 	{
 		if(controlVector.x < 0)
+		{
 			facingWhichWay = Facing.left;
+			PlayAnimation(leftAnim);
+		}
 		else if(controlVector.x > 0)
+		{
 			facingWhichWay = Facing.right;
+			PlayAnimation(rightAnim);
+		}
 
 		// Calculate how fast we should be moving	
 		targetVelocity = controlVector;
@@ -266,11 +332,18 @@ public class Movement : MonoBehaviour
 		if(grounded && direction == Directions.Movement4Way)  
 		{	
 			rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, CalculateJumpVerticalSpeed());
+			PlayAnimation(jumpAnim);
 		}
 		if(grounded && direction == Directions.MovementUpDown)  
 		{
 			rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, CalculateJumpVerticalSpeed());
+			PlayAnimation(jumpAnim);
 		}
+	}
+
+	public void Shoot()
+	{
+		PlayAnimation(shootAnim);
 	}
 	
 	private float CalculateJumpVerticalSpeed ()
