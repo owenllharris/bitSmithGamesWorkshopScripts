@@ -8,18 +8,37 @@ public class Player : MonoBehaviour
 	private Animator animator;
 	private GameObject draggingObject;
 
+	public string jumpAnim = "";
+	public string leftAnim = "";
+	public string rightAnim = "";
+	public string upAnim = "";
+	public string downAnim = "";
+	public string upLeftAnim = "";
+	public string upRightAnim = "";
+	public string downLeftAnim = "";
+	public string downRightAnim = "";
+
+
 	// Use this for initialization
 	void Start () 
 	{
 		myTransform = this.transform;
 		movement = GetComponent<Movement>();
 		animator = GetComponent<Animator>();
+		if(!animator)
+			GetComponentInChildren<Animator>();
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
 		Controls();
+	}
+
+	void PlayAnimation(string anim)
+	{
+		//movement.FacingWhichWay;
+		animator.Play(anim);
 	}
 
 	void Controls()
@@ -37,7 +56,7 @@ public class Player : MonoBehaviour
 
 		if(Input.GetButtonDown("Fire1"))
 		{
-			BroadcastMessage("Shoot", movement.GetDirection());
+			BroadcastMessage("Shoot", movement.GetDirection(), SendMessageOptions.DontRequireReceiver);
 		}
 		if(Input.GetButtonDown("Fire2"))
 		{
@@ -46,7 +65,7 @@ public class Player : MonoBehaviour
 			//RaycastHit hit;
 			
 			RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.up, 0.1f);	
-			if(hit != null)
+			if(hit != null && hit.transform)
 			{
 				Debug.Log(hit.transform.name);
 				if(hit.transform.tag == "Moveable")
@@ -61,7 +80,8 @@ public class Player : MonoBehaviour
 		if(draggingObject && Input.GetButton("Fire2"))
 		{
 			Vector3 pos = Camera.allCameras[0].ScreenToWorldPoint(Input.mousePosition);
-			draggingObject.transform.position = new Vector3(pos.x, pos.y, 0f);
+			draggingObject.BroadcastMessage("Move", pos);
+			//draggingObject.transform.position = new Vector3(pos.x, pos.y, 0f);
 		}
 		if(draggingObject && Input.GetButtonUp("Fire2"))
 		{
@@ -70,7 +90,7 @@ public class Player : MonoBehaviour
 		}
 	}
 
-	public void Dead()
+	public void Die()
 	{
 		Debug.Log("Do death animation");
 		Invoke("DeathCountdown", 2f);

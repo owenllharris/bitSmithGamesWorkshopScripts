@@ -8,8 +8,14 @@ public class Movement : MonoBehaviour
 	public enum Directions {Movement8Way, Movement4Way, MovementUpDown, MovementLeftRight, TankMovement};
 	public Directions direction;
 
-	private enum Facing {left, right, up, down, upleft, upright, downleft, downright, free};
+	public enum Facing {left, right, up, down, upleft, upright, downleft, downright, free};
 	private Facing facingWhichWay;
+
+	public Facing FacingWhichWay {
+		get {
+			return facingWhichWay;
+		}
+	}
 
 	public Vector2 GetDirection()
 	{
@@ -74,11 +80,12 @@ public class Movement : MonoBehaviour
 		}
 		else if(direction == Directions.MovementLeftRight)
 		{
-			rigidbody2D.gravityScale = 0f;
+			//rigidbody2D.gravityScale = 0f;
 		}
 		else if(direction == Directions.MovementUpDown)
 		{
-			rigidbody2D.gravityScale = 0f;
+			//rigidbody2D.gravityScale = 0f;
+			StartCoroutine(CheckGrounded());
 		}
 		else if(direction == Directions.TankMovement)
 		{
@@ -97,6 +104,11 @@ public class Movement : MonoBehaviour
 	{
 		controlVector = vector;
 		movement.Invoke(this, null);
+	}
+
+	public void Stop()
+	{
+		rigidbody2D.velocity = Vector2.zero;
 	}
 
 	private void Movement8Way()
@@ -155,13 +167,16 @@ public class Movement : MonoBehaviour
 		targetVelocity *= speed;
 		velocityChange = (targetVelocity - rigidbody2D.velocity);
 		velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
-		velocityChange.y = 0f;
+		if(onLadder)
+			velocityChange.y = Mathf.Clamp(velocityChange.y, -maxVelocityChange, maxVelocityChange);
+		else
+			velocityChange.y = 0f;
 		
 		rigidbody2D.AddForce(velocityChange);
 		if(grounded)
 			rigidbody2D.velocity += velocityChange;
 		else
-			rigidbody2D.velocity += (velocityChange * 0.5f);
+			rigidbody2D.velocity += (velocityChange * 0.75f);
 	}
 
 	private void MovementUpDown()
@@ -181,7 +196,8 @@ public class Movement : MonoBehaviour
 		velocityChange.x = 0f;
 		velocityChange.y = Mathf.Clamp(velocityChange.y, -maxVelocityChange, maxVelocityChange);
 
-		rigidbody2D.AddForce(velocityChange);
+		//rigidbody2D.AddForce(velocityChange);
+		rigidbody2D.velocity += velocityChange;
 	}
 
 	private void MovementLeftRight()
@@ -202,7 +218,8 @@ public class Movement : MonoBehaviour
 		velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
 		velocityChange.y = 0;
 
-		rigidbody2D.AddForce(velocityChange);
+		//rigidbody2D.AddForce(velocityChange);
+		rigidbody2D.velocity += velocityChange;
 	}
 
 	private void TankMovement()
@@ -220,9 +237,16 @@ public class Movement : MonoBehaviour
 		velocityChange.y = Mathf.Clamp(velocityChange.y, -maxVelocityChange, maxVelocityChange);
 		rigidbody2D.velocity += velocityChange;
 
-		if(controlVector.x != 0)
+		if(this.tag == "Player")
 		{
-			myTransform.rotation = Quaternion.AngleAxis(-controlVector.x * turnSpeed * Time.deltaTime, myTransform.forward) * myTransform.rotation;
+			if(controlVector.x != 0)
+			{
+				myTransform.rotation = Quaternion.AngleAxis(-controlVector.x * turnSpeed * Time.deltaTime, myTransform.forward) * myTransform.rotation;
+			}
+		}
+		else if(this.tag == "Enemy")
+		{
+			myTransform.rotation = Quaternion.Slerp(myTransform.rotation, Quaternion.LookRotation( controlVector ), Time.deltaTime * turnSpeed );
 		}
 	}
 
@@ -242,7 +266,11 @@ public class Movement : MonoBehaviour
 		if(grounded && direction == Directions.Movement4Way)  
 		{	
 			rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, CalculateJumpVerticalSpeed());
-		}			
+		}
+		if(grounded && direction == Directions.MovementUpDown)  
+		{
+			rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, CalculateJumpVerticalSpeed());
+		}
 	}
 	
 	private float CalculateJumpVerticalSpeed ()
@@ -266,5 +294,20 @@ public class Movement : MonoBehaviour
 			}
 			yield return new WaitForFixedUpdate();
 		}
+	}
+
+	bool onLadder = false;
+	float grav;
+	public void OnLadderEnter()
+	{
+		onLadder = true;
+		grav = rigidbody2D.gravityScale;
+		rigidbody2D.gravityScale = 0;
+	}
+
+	public void OnLadderExit()
+	{
+		onLadder = false;
+		rigidbody2D.gravityScale = grav;
 	}
 }

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Platform : MonoBehaviour 
@@ -19,9 +19,13 @@ public class Platform : MonoBehaviour
 		if(platformBehaviour == PlatformBehaviour.JumpThrough)
 		{
 			StartCoroutine(CheckPlayer());
+			this.gameObject.layer = LayerMask.NameToLayer("Platform");
+			Physics2D.IgnoreLayerCollision(player.layer, LayerMask.NameToLayer("JumpThrough"), true);
+			
 		}
 		else if(platformBehaviour == PlatformBehaviour.Solid)
 		{
+			this.gameObject.layer = LayerMask.NameToLayer("Solid");
 			Physics2D.IgnoreLayerCollision(player.layer, this.gameObject.layer, false);
 		}
 	}
@@ -36,11 +40,14 @@ public class Platform : MonoBehaviour
 				where = FindObjectRelative(player.transform.position);
 				if(where == Where.Above)
 				{
-					Physics2D.IgnoreLayerCollision(player.layer, this.gameObject.layer, false);
+					//Physics2D.
+					//Physics2D.IgnoreLayerCollision(player.layer, this.gameObject.layer, false);
+					this.gameObject.layer = LayerMask.NameToLayer("Platform");
 				}
 				else if(where == Where.Below)
 				{
-					Physics2D.IgnoreLayerCollision(player.layer, this.gameObject.layer, true);
+					//Physics2D.IgnoreLayerCollision(player.layer, this.gameObject.layer, true);
+					this.gameObject.layer = LayerMask.NameToLayer("JumpThrough");
 				}
 			}
 			yield return new WaitForFixedUpdate();

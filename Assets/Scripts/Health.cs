@@ -6,7 +6,7 @@ public class Health : MonoBehaviour
 	public int startHealth = 10;
 	private int health = 0;
 
-	public GameObject hurtParticle;
+	public GameObject hurtParticle, getHealthParticle;
 	// Use this for initialization
 	void Start () 
 	{
@@ -24,8 +24,24 @@ public class Health : MonoBehaviour
 			}
 			if(health <= 0)
 			{
-				BroadcastMessage("Dead");
+				BroadcastMessage("Die");
 			}
 		}
+	}
+
+	public bool AddHealth(int addHealth)
+	{
+		if(health < startHealth)
+		{
+			health += addHealth;
+			if(getHealthParticle)
+			{
+				Instantiate(getHealthParticle, this.transform.position, Quaternion.identity);
+			}
+			if(health > startHealth)
+				health = startHealth;
+			return true;
+		}
+		return false;
 	}
 }

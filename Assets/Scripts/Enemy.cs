@@ -43,7 +43,7 @@ public class Enemy : MonoBehaviour
 
 	private bool CanSeePlayer()
 	{
-		Debug.Log(movement.GetDirection().ToString());
+		//Debug.Log(movement.GetDirection().ToString());
 		RaycastHit2D hit = Physics2D.Raycast(new Vector2(myTransform.position.x , myTransform.position.y) + movement.GetDirection(), movement.GetDirection(), distanceToSee);
 		if(hit != null && hit.transform != null)
 		{
@@ -55,7 +55,7 @@ public class Enemy : MonoBehaviour
 		return false;
 	}
 
-	public void Dead()
+	public void Die()
 	{
 		Invoke("DeathCountdown", 2f);
 	}

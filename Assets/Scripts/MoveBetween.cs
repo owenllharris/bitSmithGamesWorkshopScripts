@@ -24,7 +24,18 @@ public class MoveBetween : MonoBehaviour
 	{
 		myTransform = this.transform;
 		state = State.AtStart;
-		this.transform.position = start.transform.position;
+		if(start)
+			this.transform.position = start.transform.position;
+		else
+		{
+			start = new GameObject();
+			start.transform.position = this.transform.position;
+		}
+		if(!end)
+		{
+			end = new GameObject();
+			end.transform.position = this.transform.position;
+		}
 		movement = GetComponent<Movement>();
 		ChangeMethodInfo(state.ToString());
 	}
